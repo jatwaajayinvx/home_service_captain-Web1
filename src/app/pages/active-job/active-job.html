@@ -1,0 +1,316 @@
+<div class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h2 class="fw-bold mb-1">
+        Active Job
+      </h2>
+
+      <p class="text-muted mb-0">
+        Manage your current service job.
+      </p>
+    </div>
+
+    <a
+      routerLink="/jobs"
+      class="btn btn-outline-secondary"
+    >
+      <i class="bi bi-arrow-left me-1"></i>
+      Jobs
+    </a>
+
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger">
+      <i class="bi bi-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      <i class="bi bi-check-circle me-2"></i>
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (loading) {
+
+    <div class="text-center py-5">
+
+      <div class="spinner-border text-primary"></div>
+
+      <p class="text-muted mt-3">
+        Loading active job...
+      </p>
+
+    </div>
+
+  } @else if (job) {
+
+    <!-- Status -->
+    <div class="card border-0 shadow-sm status-card mb-4">
+
+      <div class="card-body p-4 text-center">
+
+        <div class="status-icon">
+          <i class="bi bi-briefcase-fill"></i>
+        </div>
+
+        <h4 class="fw-bold mt-3 mb-2">
+          {{ job.status }}
+        </h4>
+
+        <span
+          class="badge px-3 py-2"
+          [class]="getStatusClass(job.status)"
+        >
+          {{ job.status }}
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- Progress -->
+    <div class="card border-0 shadow-sm mb-4">
+
+      <div class="card-body p-4">
+
+        <h5 class="fw-bold mb-4">
+          Job Progress
+        </h5>
+
+        <div class="progress-list">
+
+          <div
+            class="progress-item"
+            [class.completed]="job.status !== 'SEARCHING'"
+          >
+            <div class="progress-dot">
+              <i class="bi bi-check"></i>
+            </div>
+
+            <div>
+              <strong>Accepted</strong>
+              <div class="small text-muted">
+                Job accepted
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="progress-item"
+            [class.completed]="
+              job.status === 'ON_THE_WAY' ||
+              job.status === 'ARRIVED' ||
+              job.status === 'STARTED' ||
+              job.status === 'COMPLETED'
+            "
+          >
+            <div class="progress-dot">
+              <i class="bi bi-truck"></i>
+            </div>
+
+            <div>
+              <strong>On The Way</strong>
+              <div class="small text-muted">
+                Travelling to customer
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="progress-item"
+            [class.completed]="
+              job.status === 'ARRIVED' ||
+              job.status === 'STARTED' ||
+              job.status === 'COMPLETED'
+            "
+          >
+            <div class="progress-dot">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+
+            <div>
+              <strong>Arrived</strong>
+              <div class="small text-muted">
+                Reached customer location
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="progress-item"
+            [class.completed]="
+              job.status === 'STARTED' ||
+              job.status === 'COMPLETED'
+            "
+          >
+            <div class="progress-dot">
+              <i class="bi bi-tools"></i>
+            </div>
+
+            <div>
+              <strong>Service Started</strong>
+              <div class="small text-muted">
+                Work in progress
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="progress-item"
+            [class.completed]="
+              job.status === 'COMPLETED'
+            "
+          >
+            <div class="progress-dot">
+              <i class="bi bi-check-circle"></i>
+            </div>
+
+            <div>
+              <strong>Completed</strong>
+              <div class="small text-muted">
+                Job completed
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Job Details -->
+    <div class="card border-0 shadow-sm mb-4">
+
+      <div class="card-body p-4">
+
+        <h5 class="fw-bold mb-4">
+          Job Details
+        </h5>
+
+        <div class="row g-4">
+
+          <div class="col-12 col-md-6">
+
+            <div class="detail-item">
+              <span>Booking Number</span>
+              <strong>{{ job.booking_number }}</strong>
+            </div>
+
+          </div>
+
+          <div class="col-12 col-md-6">
+
+            <div class="detail-item">
+              <span>Service</span>
+              <strong>{{ job.service_id }}</strong>
+            </div>
+
+          </div>
+
+          <div class="col-12">
+
+            <div class="detail-item">
+              <span>Problem</span>
+              <strong>
+                {{ job.problem_description || 'No description' }}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="col-12 col-md-6">
+
+            <div class="detail-item">
+              <span>Scheduled Date</span>
+              <strong>
+                {{ formatDate(job.scheduled_date) }}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="col-12 col-md-6">
+
+            <div class="detail-item">
+              <span>Scheduled Time</span>
+              <strong>
+                {{ formatTime(job.scheduled_time) }}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="col-12 col-md-6">
+
+            <div class="detail-item">
+              <span>Estimated Amount</span>
+              <strong class="text-success">
+                ₹{{ job.estimated_amount | number:'1.0-2' }}
+              </strong>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Action -->
+    @if (getNextStatus()) {
+
+      <div class="card border-0 shadow-sm action-card">
+
+        <div class="card-body p-4 text-center">
+
+          <h5 class="fw-bold">
+            Ready for next step?
+          </h5>
+
+          <p class="text-muted">
+            Update the job status after completing
+            the current step.
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-primary btn-lg px-5"
+            (click)="updateStatus()"
+            [disabled]="updating"
+          >
+
+            @if (updating) {
+
+              <span
+                class="spinner-border spinner-border-sm me-2"
+              ></span>
+
+              Updating...
+
+            } @else {
+
+              <i class="bi bi-arrow-right-circle me-2"></i>
+
+              {{ getNextStatusLabel() }}
+
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>

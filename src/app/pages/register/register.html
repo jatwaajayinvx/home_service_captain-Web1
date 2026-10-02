@@ -1,0 +1,155 @@
+<div class="container">
+
+  <div class="row justify-content-center align-items-center min-vh-100">
+
+    <div class="col-12 col-sm-10 col-md-6 col-lg-5">
+
+      <div class="text-center mb-4">
+
+        <div class="register-icon">
+          <i class="bi bi-person-workspace"></i>
+        </div>
+
+        <h2 class="fw-bold mt-3">
+          Become a Captain
+        </h2>
+
+        <p class="text-muted">
+          Join Home Service Captain and start
+          accepting service jobs.
+        </p>
+
+      </div>
+
+
+      <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-4">
+
+          @if (errorMessage) {
+
+            <div
+              class="alert alert-danger"
+              role="alert"
+            >
+              {{ errorMessage }}
+            </div>
+
+          }
+
+
+          @if (successMessage) {
+
+            <div
+              class="alert alert-success"
+              role="alert"
+            >
+              <i class="bi bi-check-circle me-2"></i>
+              {{ successMessage }}
+            </div>
+
+          }
+
+
+          <form (ngSubmit)="register()">
+
+            <div class="mb-4">
+
+              <label
+                for="experience"
+                class="form-label fw-semibold"
+              >
+                Experience
+              </label>
+
+              <div class="input-group input-group-lg">
+
+                <input
+                  id="experience"
+                  type="number"
+                  class="form-control"
+                  [(ngModel)]="experienceYears"
+                  name="experienceYears"
+                  min="0"
+                  max="50"
+                  required
+                >
+
+                <span class="input-group-text">
+                  Years
+                </span>
+
+              </div>
+
+              <div class="form-text">
+                Enter your professional service experience.
+              </div>
+
+            </div>
+
+
+            <div class="alert alert-info">
+
+              <div class="d-flex gap-2">
+
+                <i class="bi bi-info-circle"></i>
+
+                <div>
+
+                  <strong>KYC Verification</strong>
+
+                  <div class="small mt-1">
+                    Your Captain profile will initially
+                    be marked as <strong>Pending</strong>.
+                    Admin verification is required before
+                    accepting jobs.
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="submit"
+              class="btn btn-primary btn-lg w-100"
+              [disabled]="loading"
+            >
+
+              @if (loading) {
+
+                <span
+                  class="spinner-border
+                         spinner-border-sm me-2"
+                ></span>
+
+                Creating Profile...
+
+              } @else {
+
+                <i class="bi bi-person-plus me-2"></i>
+
+                Create Captain Profile
+
+              }
+
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+
+      <p class="text-center text-muted small mt-4">
+        Home Service Captain
+      </p>
+
+    </div>
+
+  </div>
+
+</div>

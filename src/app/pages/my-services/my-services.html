@@ -1,0 +1,173 @@
+<div class="container py-4">
+
+  <div class="mb-4">
+    <h2 class="fw-bold mb-1">
+      My Services
+    </h2>
+
+    <p class="text-muted mb-0">
+      Select the services you provide to customers.
+    </p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger">
+      <i class="bi bi-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      <i class="bi bi-check-circle me-2"></i>
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (loading) {
+
+    <div class="text-center py-5">
+
+      <div class="spinner-border text-primary"></div>
+
+      <p class="text-muted mt-3">
+        Loading services...
+      </p>
+
+    </div>
+
+  } @else {
+
+    <div class="row g-3">
+
+      @for (service of services; track service.id) {
+
+        <div class="col-12 col-md-6 col-lg-4">
+
+          <div
+            class="card service-card border-0 shadow-sm"
+            [class.selected]="isSelected(service.id)"
+          >
+
+            <div class="card-body p-4">
+
+              <div
+                class="d-flex
+                       justify-content-between
+                       align-items-start
+                       mb-3"
+              >
+
+                <div class="service-icon">
+                  <i class="bi bi-tools"></i>
+                </div>
+
+                <input
+                  type="checkbox"
+                  class="form-check-input service-checkbox"
+                  [checked]="isSelected(service.id)"
+                  (change)="toggleService(service.id)"
+                >
+
+              </div>
+
+              <h5 class="fw-bold mb-2">
+                {{ service.name }}
+              </h5>
+
+              @if (service.description) {
+
+                <p class="text-muted small mb-3">
+                  {{ service.description }}
+                </p>
+
+              }
+
+              @if (isSelected(service.id)) {
+
+                <div class="experience-box">
+
+                  <label class="form-label fw-semibold">
+                    Experience
+                  </label>
+
+                  <div class="input-group">
+
+                    <input
+                      type="number"
+                      class="form-control"
+                      min="0"
+                      max="50"
+                      [(ngModel)]="experienceYears[service.id]"
+                    >
+
+                    <span class="input-group-text">
+                      Years
+                    </span>
+
+                  </div>
+
+                </div>
+
+              } @else {
+
+                <button
+                  type="button"
+                  class="btn btn-outline-primary w-100"
+                  (click)="toggleService(service.id)"
+                >
+                  <i class="bi bi-plus-circle me-1"></i>
+                  Add Service
+                </button>
+
+              }
+
+            </div>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+    <div class="save-bar mt-4">
+
+      <div>
+        <strong>
+          {{ selectedServiceIds.length }}
+        </strong>
+        service(s) selected
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary px-4"
+        (click)="saveServices()"
+        [disabled]="saving"
+      >
+
+        @if (saving) {
+
+          <span
+            class="spinner-border
+                   spinner-border-sm me-2"
+          ></span>
+
+          Saving...
+
+        } @else {
+
+          <i class="bi bi-check-lg me-2"></i>
+          Save Services
+
+        }
+
+      </button>
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,369 @@
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex align-items-center mb-4">
+
+    <a
+      routerLink="/jobs"
+      class="btn btn-outline-secondary me-3"
+    >
+      <i class="bi bi-arrow-left"></i>
+    </a>
+
+    <div>
+      <h2 class="fw-bold mb-1">
+        Job Details
+      </h2>
+
+      <p class="text-muted mb-0">
+        Review the service request before accepting
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  @if (loading) {
+
+    <div class="text-center py-5">
+
+      <div class="spinner-border text-primary"></div>
+
+      <p class="text-muted mt-3">
+        Loading job details...
+      </p>
+
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (errorMessage) {
+
+    <div class="alert alert-danger">
+
+      <i class="bi bi-exclamation-circle me-2"></i>
+
+      {{ errorMessage }}
+
+      <div class="mt-3">
+        <a
+          routerLink="/jobs"
+          class="btn btn-sm btn-outline-danger"
+        >
+          Back to Jobs
+        </a>
+      </div>
+
+    </div>
+
+  }
+
+  <!-- Job -->
+  @else if (job) {
+
+    @if (successMessage) {
+
+      <div class="alert alert-success">
+        <i class="bi bi-check-circle me-2"></i>
+        {{ successMessage }}
+      </div>
+
+    }
+
+    @if (errorMessage) {
+
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-circle me-2"></i>
+        {{ errorMessage }}
+      </div>
+
+    }
+
+    <div class="row g-4">
+
+      <!-- Main Details -->
+      <div class="col-12 col-lg-8">
+
+        <!-- Service Card -->
+        <div class="card border-0 shadow-sm mb-4">
+
+          <div class="card-body p-4">
+
+            <div
+              class="d-flex justify-content-between
+                     align-items-start"
+            >
+
+              <div>
+
+                <span class="badge bg-primary mb-2">
+                  {{ job.service_name }}
+                </span>
+
+                <h3 class="fw-bold mb-1">
+                  {{ job.booking_number }}
+                </h3>
+
+                <span class="badge bg-warning text-dark">
+                  {{ job.status }}
+                </span>
+
+              </div>
+
+              <div class="text-end">
+
+                <small class="text-muted">
+                  Estimated Amount
+                </small>
+
+                <h3 class="fw-bold mb-0">
+                  ₹{{ job.estimated_amount | number:'1.0-0' }}
+                </h3>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Problem -->
+        <div class="card border-0 shadow-sm mb-4">
+
+          <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-tools me-2"></i>
+              Service Request
+            </h5>
+
+            @if (job.problem_description) {
+
+              <p class="mb-0">
+                {{ job.problem_description }}
+              </p>
+
+            } @else {
+
+              <p class="text-muted mb-0">
+                No problem description provided.
+              </p>
+
+            }
+
+          </div>
+
+        </div>
+
+        <!-- Customer -->
+        <div class="card border-0 shadow-sm mb-4">
+
+          <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-person me-2"></i>
+              Customer
+            </h5>
+
+            <div class="customer-row">
+
+              <div class="customer-avatar">
+                <i class="bi bi-person-fill"></i>
+              </div>
+
+              <div>
+
+                <div class="fw-semibold">
+                  {{ job.customer_name }}
+                </div>
+
+                <div class="text-muted">
+                  {{ job.customer_mobile }}
+                </div>
+
+              </div>
+
+              <a
+                [href]="'tel:' + job.customer_mobile"
+                class="btn btn-outline-success ms-auto"
+              >
+                <i class="bi bi-telephone me-1"></i>
+                Call
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Address -->
+        <div class="card border-0 shadow-sm mb-4">
+
+          <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-geo-alt me-2"></i>
+              Service Location
+            </h5>
+
+            <div class="address-box">
+
+              <div class="fw-semibold">
+                {{ job.address_line }}
+              </div>
+
+              @if (job.landmark) {
+
+                <div class="text-muted mt-1">
+                  Landmark: {{ job.landmark }}
+                </div>
+
+              }
+
+              <div class="text-muted mt-1">
+                {{ job.city }},
+                {{ job.state }} -
+                {{ job.pincode }}
+              </div>
+
+            </div>
+
+            <div class="mt-3">
+
+              <span class="distance-badge">
+                <i class="bi bi-signpost-2 me-1"></i>
+                {{ job.distance_km | number:'1.1-2' }}
+                km away
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-12 col-lg-4">
+
+        <div class="card border-0 shadow-sm sticky-card">
+
+          <div class="card-body p-4">
+
+            <h5 class="fw-bold mb-4">
+              Job Summary
+            </h5>
+
+            <div class="summary-row">
+
+              <span class="text-muted">
+                Service
+              </span>
+
+              <span class="fw-semibold">
+                {{ job.service_name }}
+              </span>
+
+            </div>
+
+            <div class="summary-row">
+
+              <span class="text-muted">
+                Distance
+              </span>
+
+              <span class="fw-semibold">
+                {{ job.distance_km | number:'1.1-2' }} km
+              </span>
+
+            </div>
+
+            <div class="summary-row">
+
+              <span class="text-muted">
+                Date
+              </span>
+
+              <span class="fw-semibold">
+                {{ formatDate(job.scheduled_date) }}
+              </span>
+
+            </div>
+
+            <div class="summary-row">
+
+              <span class="text-muted">
+                Time
+              </span>
+
+              <span class="fw-semibold">
+                {{ formatTime(job.scheduled_time) }}
+              </span>
+
+            </div>
+
+            <hr>
+
+            <div
+              class="d-flex justify-content-between
+                     align-items-center mb-4"
+            >
+
+              <span class="fw-semibold">
+                Estimated Earnings
+              </span>
+
+              <span class="earning-amount">
+                ₹{{ job.estimated_amount | number:'1.0-0' }}
+              </span>
+
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-success btn-lg w-100"
+              (click)="acceptJob()"
+              [disabled]="accepting"
+            >
+
+              @if (accepting) {
+
+                <span
+                  class="spinner-border
+                         spinner-border-sm me-2"
+                ></span>
+
+                Accepting...
+
+              } @else {
+
+                <i class="bi bi-check-circle me-2"></i>
+
+                Accept Job
+
+              }
+
+            </button>
+
+            <a
+              routerLink="/jobs"
+              class="btn btn-outline-secondary w-100 mt-2"
+            >
+              Back to Jobs
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

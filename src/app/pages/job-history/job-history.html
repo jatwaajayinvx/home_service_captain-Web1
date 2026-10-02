@@ -1,0 +1,272 @@
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h3 class="fw-bold mb-1">
+        Job History
+      </h3>
+
+      <p class="text-muted mb-0">
+        Your completed service jobs
+      </p>
+    </div>
+
+    <a
+      routerLink="/dashboard"
+      class="btn btn-outline-secondary"
+    >
+      <i class="bi bi-arrow-left me-2"></i>
+      Dashboard
+    </a>
+
+  </div>
+
+
+  <!-- Loading -->
+  @if (loading) {
+
+    <div class="card border-0 shadow-sm">
+
+      <div class="card-body text-center py-5">
+
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+        ></div>
+
+        <p class="text-muted mb-0">
+          Loading job history...
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- Error -->
+  @if (!loading && errorMessage) {
+
+    <div class="alert alert-danger">
+
+      <i class="bi bi-exclamation-circle me-2"></i>
+
+      {{ errorMessage }}
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-danger ms-3"
+        (click)="loadJobHistory()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+
+  <!-- Empty -->
+  @if (!loading && !errorMessage && jobs.length === 0) {
+
+    <div class="card border-0 shadow-sm">
+
+      <div class="card-body text-center py-5">
+
+        <i
+          class="bi bi-clock-history display-4 text-muted"
+        ></i>
+
+        <h5 class="fw-bold mt-3">
+          No completed jobs yet
+        </h5>
+
+        <p class="text-muted mb-0">
+          Your completed service jobs will appear here.
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- Jobs -->
+  @if (!loading && !errorMessage && jobs.length > 0) {
+
+    <div class="row g-4">
+
+      @for (job of jobs; track job.booking_id) {
+
+        <div class="col-12">
+
+          <div class="card border-0 shadow-sm">
+
+            <div class="card-body">
+
+              <!-- Top -->
+              <div
+                class="d-flex justify-content-between align-items-start"
+              >
+
+                <div>
+
+                  <div class="d-flex align-items-center gap-2">
+
+                    <h5 class="fw-bold mb-0">
+                      {{ job.service_name }}
+                    </h5>
+
+                    <span class="badge bg-success">
+                      {{ job.status }}
+                    </span>
+
+                  </div>
+
+                  <small class="text-muted">
+                    Booking #{{ job.booking_number }}
+                  </small>
+
+                </div>
+
+
+                <div class="text-end">
+
+                  <div class="fw-bold fs-5 text-success">
+                    ₹{{ getAmount(job) }}
+                  </div>
+
+                  <small class="text-muted">
+                    Earned / Amount
+                  </small>
+
+                </div>
+
+              </div>
+
+
+              <hr>
+
+
+              <!-- Details -->
+              <div class="row g-3">
+
+                <div class="col-md-6">
+
+                  <div class="d-flex">
+
+                    <i class="bi bi-person me-3 text-muted"></i>
+
+                    <div>
+                      <small class="text-muted">
+                        Customer
+                      </small>
+
+                      <div class="fw-semibold">
+                        {{ job.customer_name }}
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                  <div class="d-flex">
+
+                    <i class="bi bi-geo-alt me-3 text-muted"></i>
+
+                    <div>
+                      <small class="text-muted">
+                        Service Location
+                      </small>
+
+                      <div class="fw-semibold">
+                        {{ job.address_line }}, {{ job.city }}
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                  <div class="d-flex">
+
+                    <i class="bi bi-calendar-event me-3 text-muted"></i>
+
+                    <div>
+                      <small class="text-muted">
+                        Scheduled
+                      </small>
+
+                      <div class="fw-semibold">
+                        {{ job.scheduled_date || '-' }}
+                        {{ job.scheduled_time || '' }}
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                  <div class="d-flex">
+
+                    <i class="bi bi-check-circle me-3 text-muted"></i>
+
+                    <div>
+                      <small class="text-muted">
+                        Completed
+                      </small>
+
+                      <div class="fw-semibold">
+                        {{ job.completed_at || '-' }}
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <!-- Problem -->
+              @if (job.problem_description) {
+
+                <div class="alert alert-light mt-4 mb-0">
+
+                  <strong>
+                    Problem:
+                  </strong>
+
+                  {{ job.problem_description }}
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

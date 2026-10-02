@@ -1,0 +1,256 @@
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+      <h2 class="fw-bold mb-1">
+        Available Jobs
+      </h2>
+
+      <p class="text-muted mb-0">
+        Nearby service requests for you
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="refreshJobs()"
+      [disabled]="loading"
+    >
+      <i class="bi bi-arrow-clockwise me-1"></i>
+      Refresh
+    </button>
+
+  </div>
+
+  <!-- Loading -->
+  @if (loading) {
+
+    <div class="text-center py-5">
+
+      <div class="spinner-border text-primary"></div>
+
+      <p class="text-muted mt-3">
+        Finding nearby jobs...
+      </p>
+
+    </div>
+
+  }
+
+  <!-- Error -->
+  @else if (errorMessage) {
+
+    <div class="alert alert-danger">
+
+      <i class="bi bi-exclamation-circle me-2"></i>
+
+      {{ errorMessage }}
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-danger ms-3"
+        (click)="refreshJobs()"
+      >
+        Retry
+      </button>
+
+    </div>
+
+  }
+
+  <!-- Empty -->
+  @else if (jobs.length === 0) {
+
+    <div class="card border-0 shadow-sm">
+
+      <div class="card-body text-center py-5">
+
+        <div class="empty-icon">
+          <i class="bi bi-inbox"></i>
+        </div>
+
+        <h5 class="fw-bold mt-3">
+          No jobs nearby
+        </h5>
+
+        <p class="text-muted mb-0">
+          New service requests will appear here
+          when they are available.
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- Jobs -->
+  @else {
+
+    <div class="row g-3">
+
+      @for (job of jobs; track job.booking_id) {
+
+        <div class="col-12 col-lg-6">
+
+          <div class="card job-card border-0 shadow-sm h-100">
+
+            <div class="card-body p-4">
+
+              <!-- Service + Amount -->
+              <div
+                class="d-flex justify-content-between
+                       align-items-start mb-3"
+              >
+
+                <div>
+
+                  <span class="badge bg-primary-subtle text-primary mb-2">
+                    {{ job.service_name }}
+                  </span>
+
+                  <h5 class="fw-bold mb-0">
+                    {{ job.booking_number }}
+                  </h5>
+
+                </div>
+
+                <div class="text-end">
+
+                  <small class="text-muted">
+                    Estimated
+                  </small>
+
+                  <h4 class="fw-bold mb-0">
+                    ₹{{ job.estimated_amount | number:'1.0-0' }}
+                  </h4>
+
+                </div>
+
+              </div>
+
+              <hr>
+
+              <!-- Customer -->
+              <div class="d-flex gap-3 mb-3">
+
+                <div class="job-icon">
+                  <i class="bi bi-person"></i>
+                </div>
+
+                <div>
+
+                  <small class="text-muted">
+                    Customer
+                  </small>
+
+                  <div class="fw-semibold">
+                    {{ job.customer_name }}
+                  </div>
+
+                </div>
+
+              </div>
+
+              <!-- Problem -->
+              @if (job.problem_description) {
+
+                <div class="d-flex gap-3 mb-3">
+
+                  <div class="job-icon">
+                    <i class="bi bi-tools"></i>
+                  </div>
+
+                  <div>
+
+                    <small class="text-muted">
+                      Problem
+                    </small>
+
+                    <div>
+                      {{ job.problem_description }}
+                    </div>
+
+                  </div>
+
+                </div>
+
+              }
+
+              <!-- Location -->
+              <div class="d-flex gap-3 mb-3">
+
+                <div class="job-icon">
+                  <i class="bi bi-geo-alt"></i>
+                </div>
+
+                <div>
+
+                  <small class="text-muted">
+                    Location
+                  </small>
+
+                  <div>
+                    {{ job.address_line }},
+                    {{ job.city }}
+                  </div>
+
+                  <span class="distance-badge">
+                    <i class="bi bi-signpost-2 me-1"></i>
+                    {{ job.distance_km | number:'1.1-2' }} km away
+                  </span>
+
+                </div>
+
+              </div>
+
+              <!-- Schedule -->
+              <div class="d-flex gap-3 mb-4">
+
+                <div class="job-icon">
+                  <i class="bi bi-calendar-event"></i>
+                </div>
+
+                <div>
+
+                  <small class="text-muted">
+                    Scheduled
+                  </small>
+
+                  <div class="fw-semibold">
+                    {{ formatDate(job.scheduled_date) }}
+                  </div>
+
+                  <small class="text-muted">
+                    {{ formatTime(job.scheduled_time) }}
+                  </small>
+
+                </div>
+
+              </div>
+
+              <!-- Button -->
+              <a
+                class="btn btn-primary w-100"
+                [routerLink]="['/jobs', job.booking_id]"
+              >
+                <i class="bi bi-eye me-2"></i>
+                View Job
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

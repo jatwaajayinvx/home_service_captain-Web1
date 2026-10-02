@@ -1,0 +1,682 @@
+<div class="container py-4">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">
+            My Profile
+        </h2>
+
+        <p class="text-muted mb-0">
+            Manage and view your Captain profile.
+        </p>
+    </div>
+
+
+    <!-- Error Message -->
+    @if (errorMessage) {
+
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-circle me-2"></i>
+
+            {{ errorMessage }}
+        </div>
+
+    }
+
+
+    <!-- Success Message -->
+    @if (successMessage) {
+
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+
+            {{ successMessage }}
+        </div>
+
+    }
+
+
+    <!-- Loading -->
+    @if (loading) {
+
+        <div class="text-center py-5">
+
+            <div class="spinner-border text-primary"></div>
+
+            <p class="text-muted mt-3">
+                Loading profile...
+            </p>
+
+        </div>
+
+    }
+
+
+    <!-- Profile Loaded -->
+    @else if (captain) {
+
+
+        <!-- ========================================= -->
+        <!-- PROFILE HEADER -->
+        <!-- ========================================= -->
+
+        <div class="card border-0 shadow-sm profile-header mb-4">
+
+            <div class="card-body p-4">
+
+
+                <!-- =============================== -->
+                <!-- VIEW MODE -->
+                <!-- =============================== -->
+
+                @if (!editMode) {
+
+                    <div class="d-flex align-items-center gap-3">
+
+                        <!-- Avatar -->
+                        <div class="profile-avatar">
+
+                            <i class="bi bi-person"></i>
+
+                        </div>
+
+
+                        <!-- User Information -->
+                        <div class="flex-grow-1">
+
+                            <h3 class="fw-bold mb-1">
+
+                                {{ user?.name || 'Captain' }}
+
+                            </h3>
+
+
+                            <div class="text-muted">
+
+                                <i class="bi bi-phone me-1"></i>
+
+                                {{ user?.mobile }}
+
+                            </div>
+
+
+                            @if (user?.email) {
+
+                                <div class="text-muted small mt-1">
+
+                                    <i class="bi bi-envelope me-1"></i>
+
+                                    {{ user?.email }}
+
+                                </div>
+
+                            }
+
+                        </div>
+
+
+                        <!-- KYC -->
+                        <div class="text-end">
+
+                            <span
+                                class="badge"
+                                [class]="getKycClass()"
+                            >
+
+                                {{ captain.kyc_status }}
+
+                            </span>
+
+                            <div class="small text-muted mt-2">
+
+                                KYC Status
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Edit Button -->
+                    <div class="mt-4 text-end">
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            (click)="startEdit()"
+                        >
+
+                            <i class="bi bi-pencil me-2"></i>
+
+                            Edit Profile
+
+                        </button>
+
+                    </div>
+
+                }
+
+
+                <!-- =============================== -->
+                <!-- EDIT MODE -->
+                <!-- =============================== -->
+
+                @else {
+
+                    <div class="d-flex align-items-center gap-3 mb-4">
+
+                        <div class="profile-avatar">
+
+                            <i class="bi bi-person"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h4 class="fw-bold mb-1">
+
+                                Edit Profile
+
+                            </h4>
+
+                            <p class="text-muted mb-0">
+
+                                Update your personal information.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row g-3">
+
+
+                        <!-- Name -->
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label fw-semibold">
+
+                                Full Name
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                [(ngModel)]="editName"
+                                placeholder="Enter your name"
+                            />
+
+                        </div>
+
+
+                        <!-- Mobile -->
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label fw-semibold">
+
+                                Mobile
+
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                [value]="user?.mobile || ''"
+                                disabled
+                            />
+
+                            <div class="form-text">
+
+                                Mobile number cannot be changed here.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Email -->
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label fw-semibold">
+
+                                Email
+
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                [(ngModel)]="editEmail"
+                                placeholder="Enter your email"
+                            />
+
+                        </div>
+
+
+                        <!-- Experience -->
+                        <div class="col-12 col-md-6">
+
+                            <label class="form-label fw-semibold">
+
+                                Experience (Years)
+
+                            </label>
+
+                            <input
+                                type="number"
+                                class="form-control"
+                                [(ngModel)]="editExperience"
+                                min="0"
+                                max="50"
+                            />
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-secondary"
+                            (click)="cancelEdit()"
+                            [disabled]="saving"
+                        >
+
+                            <i class="bi bi-x-lg me-2"></i>
+
+                            Cancel
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            (click)="saveProfile()"
+                            [disabled]="saving"
+                        >
+
+                            @if (saving) {
+
+                                <span
+                                    class="spinner-border spinner-border-sm me-2"
+                                ></span>
+
+                                Saving...
+
+                            }
+
+                            @else {
+
+                                <i class="bi bi-check-lg me-2"></i>
+
+                                Save Changes
+
+                            }
+
+                        </button>
+
+                    </div>
+
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- ACCOUNT INFORMATION -->
+        <!-- ========================================= -->
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="fw-bold mb-4">
+
+                    <i
+                        class="bi bi-person-vcard me-2 text-primary"
+                    ></i>
+
+                    Account Information
+
+                </h5>
+
+
+                <div class="row g-4">
+
+
+                    <!-- Role -->
+                    <div class="col-12 col-md-6">
+
+                        <div class="info-item">
+
+                            <div class="info-icon">
+
+                                <i class="bi bi-person-badge"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="small text-muted">
+                                    Role
+                                </div>
+
+                                <strong>
+                                    {{ user?.role }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- KYC -->
+                    <div class="col-12 col-md-6">
+
+                        <div class="info-item">
+
+                            <div class="info-icon">
+
+                                <i class="bi bi-patch-check"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="small text-muted">
+                                    KYC Status
+                                </div>
+
+                                <strong>
+                                    {{ captain.kyc_status }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Availability -->
+                    <div class="col-12 col-md-6">
+
+                        <div class="info-item">
+
+                            <div class="info-icon">
+
+                                <i class="bi bi-clock"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="small text-muted">
+                                    Availability
+                                </div>
+
+                                <strong>
+                                    {{ captain.availability_status }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Experience -->
+                    <div class="col-12 col-md-6">
+
+                        <div class="info-item">
+
+                            <div class="info-icon">
+
+                                <i class="bi bi-briefcase"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div class="small text-muted">
+                                    Experience
+                                </div>
+
+                                <strong>
+                                    {{ captain.experience_years }}
+                                    years
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- PERFORMANCE -->
+        <!-- ========================================= -->
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="fw-bold mb-4">
+
+                    <i
+                        class="bi bi-bar-chart me-2 text-primary"
+                    ></i>
+
+                    Performance
+
+                </h5>
+
+
+                <div class="row g-3">
+
+
+                    <!-- Total Jobs -->
+                    <div class="col-12 col-md-4">
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+
+                                <i class="bi bi-briefcase"></i>
+
+                            </div>
+
+                            <div class="stat-value">
+
+                                {{ captain.total_jobs }}
+
+                            </div>
+
+                            <div class="stat-label">
+
+                                Total Jobs
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Completed Jobs -->
+                    <div class="col-12 col-md-4">
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+
+                                <i class="bi bi-check-circle"></i>
+
+                            </div>
+
+                            <div class="stat-value">
+
+                                {{ captain.completed_jobs }}
+
+                            </div>
+
+                            <div class="stat-label">
+
+                                Completed Jobs
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Rating -->
+                    <div class="col-12 col-md-4">
+
+                        <div class="stat-card">
+
+                            <div class="stat-icon">
+
+                                <i class="bi bi-star-fill"></i>
+
+                            </div>
+
+                            <div class="stat-value">
+
+                                {{ captain.rating | number:'1.1-2' }}
+
+                            </div>
+
+                            <div class="stat-label">
+
+                                Rating
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- LOCATION -->
+        <!-- ========================================= -->
+
+        <div class="card border-0 shadow-sm mb-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="fw-bold mb-3">
+
+                    <i
+                        class="bi bi-geo-alt me-2 text-primary"
+                    ></i>
+
+                    Current Location
+
+                </h5>
+
+
+                @if (
+                    captain.current_latitude !== undefined &&
+                    captain.current_longitude !== undefined
+                ) {
+
+                    <div class="location-box">
+
+                        <div>
+
+                            <span class="text-muted">
+                                Latitude
+                            </span>
+
+                            <strong>
+                                {{ captain.current_latitude }}
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="text-muted">
+                                Longitude
+                            </span>
+
+                            <strong>
+                                {{ captain.current_longitude }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                }
+
+                @else {
+
+                    <p class="text-muted mb-0">
+
+                        Location has not been updated yet.
+
+                    </p>
+
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================= -->
+        <!-- LOGOUT -->
+        <!-- ========================================= -->
+
+        <div class="text-end">
+
+            <button
+                type="button"
+                class="btn btn-outline-danger"
+                (click)="logout()"
+            >
+
+                <i
+                    class="bi bi-box-arrow-right me-2"
+                ></i>
+
+                Logout
+
+            </button>
+
+        </div>
+
+    }
+
+</div>

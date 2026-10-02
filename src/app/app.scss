@@ -1,0 +1,23 @@
+.navbar-brand {
+  font-size: 1.1rem;
+}
+
+.nav-link {
+  cursor: pointer;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+.nav-link.active {
+  color: #0d6efd !important;
+}
+
+.captain-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+main {
+  min-height: calc(100vh - 65px);
+}
